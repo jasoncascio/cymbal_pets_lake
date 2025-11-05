@@ -1,69 +1,47 @@
 view: pet_profiles {
-  sql_table_name: `cymbal_pets_lake.pet_profiles` ;;
-  drill_fields: [pet_id]
+  label: "Pet Profiles"
+  sql_table_name: `gemini-looker-demo-dataset.cymbal_pets.pet_profiles` ;;
+  fields_hidden_by_default: yes
 
-  dimension: pet_id {
-    primary_key: yes
-    type: number
-    description: "Unique identifier for each pet."
-    sql: ${TABLE}.pet_id ;;
-  }
   dimension: activity_level {
+    hidden: no
     type: string
-    description: "Description of the pet's typical activity level."
     sql: ${TABLE}.activity_level ;;
   }
   dimension: age {
     type: number
-    description: "Age of the pet in years."
     sql: ${TABLE}.age ;;
   }
   dimension: customer_id {
     type: number
-    description: "Unique identifier for the pet's owner."
-    # hidden: yes
     sql: ${TABLE}.customer_id ;;
   }
   dimension: dietary_needs {
     type: string
-    description: "Specific dietary requirements or restrictions for the pet."
     sql: ${TABLE}.dietary_needs ;;
   }
-  dimension: nickname {
-    type: string
-    description: "Nickname of the pet."
-    sql: ${TABLE}.nickname ;;
+  dimension: pet_id {
+    primary_key: yes
+    type: number
+    sql: ${TABLE}.pet_id ;;
   }
   dimension: pet_name {
+    hidden: no
     type: string
-    description: "Official name of the pet."
     sql: ${TABLE}.pet_name ;;
   }
   dimension: pet_type {
+    hidden: no
     type: string
-    description: "Category or breed of the pet."
     sql: ${TABLE}.pet_type ;;
   }
   dimension: weight {
     type: number
-    description: "Weight of the pet in pounds."
     sql: ${TABLE}.weight ;;
   }
   measure: count {
+    hidden: no
     type: count
-    drill_fields: [detail*]
+    drill_fields: [pet_name]
   }
-
-  # ----- Sets of fields for drilling ------
-  set: detail {
-    fields: [
-	pet_id,
-	pet_name,
-	nickname,
-	customers.last_name,
-	customers.customer_id,
-	customers.first_name
-	]
-  }
-
 }

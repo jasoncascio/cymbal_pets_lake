@@ -1,90 +1,112 @@
+include: "/extensions/regions.view.lkml"
+include: "/extensions/location.view.lkml"
 view: stores {
-  sql_table_name: `cymbal_pets_lake.stores` ;;
+  sql_table_name: `@{gcp_project}.@{bq_dataset}.stores` ;;
+  fields_hidden_by_default: yes
   drill_fields: [store_id]
+  extends: [regions, location]
 
   dimension: store_id {
     primary_key: yes
     type: number
-    description: "Unique identifier for the store."
     sql: ${TABLE}.store_id ;;
   }
-  dimension: address_city {
-    type: string
-    description: "City where the store is located."
-    sql: ${TABLE}.address_city ;;
-  }
-  dimension: address_state {
-    type: string
-    description: "State where the store is located."
-    sql: ${TABLE}.address_state ;;
-  }
   dimension: latitude {
+    group_label: "Location"
     type: number
-    description: "Latitude coordinate of the store location."
     sql: ${TABLE}.latitude ;;
   }
   dimension: longitude {
+    group_label: "Location"
     type: number
-    description: "Longitude coordinate of the store location."
     sql: ${TABLE}.longitude ;;
   }
+  # dimension: location {
+  #   group_label: "Location"
+  #   type: location
+  #   sql_latitude: ${latitude} ;;
+  #   sql_longitude: ${longitude} ;;
+  # }
+  # dimension: city_state {
+  #   group_label: "Location"
+  #   type: string
+  #   sql: ${TABLE}.location ;;
+  # }
+
+  # dimension: state {
+  #   group_label: "Location"
+  #   type: string
+  #   sql: CASE
+  #       WHEN ${city_state} LIKE 'Washington, D.C.' THEN 'D.C.'             -- Handles "City, D.C."
+  #       WHEN ${city_state} LIKE 'Online' THEN 'Online'
+  #       WHEN ${city_state} LIKE '%, %' THEN RIGHT(${city_state}, 2)  -- Handles "City, ST"
+  #       WHEN ${city_state} LIKE '%/%' THEN SPLIT(${city_state}, '/')[OFFSET(1)] -- Handles "City/ST" (if that's a possibility)
+  #       ELSE NULL  -- Handles cases where the format isn't recognized
+  #   END;;
+  # }
+
+  dimension: address_city {
+    hidden: no
+    type: string
+    sql: ${TABLE}.address_city ;;
+  }
+
+  dimension: address_state {
+    hidden: no
+    type: string
+    sql: ${TABLE}.address_state ;;
+    map_layer_name: us_states
+  }
+
   dimension: manager_id {
     type: number
-    description: "Unique identifier for the store manager."
     sql: ${TABLE}.manager_id ;;
   }
   dimension: opening_hours__friday {
     type: string
-    description: "Opening hours for Friday."
     sql: ${TABLE}.opening_hours.Friday ;;
     group_label: "Opening Hours"
     group_item_label: "Friday"
   }
   dimension: opening_hours__monday {
     type: string
-    description: "Opening hours for Monday."
     sql: ${TABLE}.opening_hours.Monday ;;
     group_label: "Opening Hours"
     group_item_label: "Monday"
   }
   dimension: opening_hours__saturday {
     type: string
-    description: "Opening hours for Saturday."
     sql: ${TABLE}.opening_hours.Saturday ;;
     group_label: "Opening Hours"
     group_item_label: "Saturday"
   }
   dimension: opening_hours__sunday {
     type: string
-    description: "Opening hours for Sunday."
     sql: ${TABLE}.opening_hours.Sunday ;;
     group_label: "Opening Hours"
     group_item_label: "Sunday"
   }
   dimension: opening_hours__thursday {
     type: string
-    description: "Opening hours for Thursday."
     sql: ${TABLE}.opening_hours.Thursday ;;
     group_label: "Opening Hours"
     group_item_label: "Thursday"
   }
   dimension: opening_hours__tuesday {
     type: string
-    description: "Opening hours for Tuesday."
     sql: ${TABLE}.opening_hours.Tuesday ;;
     group_label: "Opening Hours"
     group_item_label: "Tuesday"
   }
   dimension: opening_hours__wednesday {
     type: string
-    description: "Opening hours for Wednesday."
     sql: ${TABLE}.opening_hours.Wednesday ;;
     group_label: "Opening Hours"
     group_item_label: "Wednesday"
   }
   dimension: store_name {
+    hidden: no
     type: string
-    description: "Name of the store."
     sql: ${TABLE}.store_name ;;
   }
   measure: count {

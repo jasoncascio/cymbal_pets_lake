@@ -1,50 +1,63 @@
+include: "/extensions/regions.view.lkml"
+
 view: customers {
-  sql_table_name: `cymbal_pets_lake.customers` ;;
+  label: "Customers"
+  sql_table_name: `@{gcp_project}.@{bq_dataset}.customers` ;;
   drill_fields: [customer_id]
+  extends: [regions]
+  fields_hidden_by_default: yes
 
   dimension: customer_id {
+    hidden: no
     primary_key: yes
     type: number
-    description: "Unique identifier for the customer."
     sql: ${TABLE}.customer_id ;;
   }
   dimension: address_city {
+    hidden: no
     type: string
-    description: "The city in the customer's address."
     sql: ${TABLE}.address_city ;;
   }
+
   dimension: address_state {
+    hidden: no
     type: string
-    description: "The state in the customer's address."
     sql: ${TABLE}.address_state ;;
+    map_layer_name: us_states
   }
+
   dimension: email {
     type: string
-    description: "The customer's email address."
     sql: ${TABLE}.email ;;
   }
+
+  dimension: full_name {
+    hidden: no
+    type: string
+    sql: CONCAT(${first_name},' ',${last_name}) ;;
+  }
+
   dimension: first_name {
     type: string
-    description: "The customer's first name."
     sql: ${TABLE}.first_name ;;
   }
   dimension: gender {
+    hidden: no
     type: string
-    description: "The customer's gender."
     sql: ${TABLE}.gender ;;
   }
   dimension: last_name {
     type: string
-    description: "The customer's last name."
     sql: ${TABLE}.last_name ;;
   }
   dimension: loyalty_member {
+    hidden: no
     type: yesno
-    description: "Indicates whether the customer is a loyalty program member."
     sql: ${TABLE}.loyalty_member ;;
   }
   measure: count {
+    hidden: no
     type: count
-    drill_fields: [customer_id, last_name, first_name, pet_profiles.count, orders.count]
+    drill_fields: [customer_id, last_name, first_name, orders.count]
   }
 }

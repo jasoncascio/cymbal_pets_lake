@@ -1,52 +1,54 @@
+include: "/extensions/regions.view.lkml"
+include: "/extensions/location.view.lkml"
+
 view: suppliers {
-  sql_table_name: `cymbal_pets_lake.suppliers` ;;
+  sql_table_name: `@{gcp_project}.@{bq_dataset}.suppliers` ;;
+  fields_hidden_by_default: yes
   drill_fields: [supplier_id]
+  extends: [regions, location]
 
   dimension: supplier_id {
     primary_key: yes
     type: number
-    description: "Unique identifier for the supplier."
     sql: ${TABLE}.supplier_id ;;
   }
-  dimension: address_city {
+  dimension: supplier_name {
+    hidden: no
     type: string
-    description: "City in which the supplier is located."
-    sql: ${TABLE}.address_city ;;
-  }
-  dimension: address_state {
-    type: string
-    description: "State in which the supplier is located."
-    sql: ${TABLE}.address_state ;;
+    sql: ${TABLE}.supplier_name ;;
   }
   dimension: contact_name {
     type: string
-    description: "Name of the contact person at the supplier."
     sql: ${TABLE}.contact_name ;;
   }
   dimension: email {
     type: string
-    description: "Email address of the supplier."
     sql: ${TABLE}.email ;;
   }
+  dimension: address_city {
+    hidden: no
+    type: string
+    sql: ${TABLE}.address_city ;;
+  }
+
+  dimension: address_state {
+    hidden: no
+    type: string
+    sql: ${TABLE}.address_state ;;
+    map_layer_name: us_states
+  }
+
+  dimension: phone_number {
+    type: string
+    sql: ${TABLE}.phone_number ;;
+  }
   dimension: latitude {
-    type: number
-    description: "Latitude coordinate of the supplier's location."
+    type: string
     sql: ${TABLE}.latitude ;;
   }
   dimension: longitude {
-    type: number
-    description: "Longitude coordinate of the supplier's location."
+    type: string
     sql: ${TABLE}.longitude ;;
-  }
-  dimension: phone_number {
-    type: string
-    description: "Phone number of the supplier."
-    sql: ${TABLE}.phone_number ;;
-  }
-  dimension: supplier_name {
-    type: string
-    description: "Name of the supplier."
-    sql: ${TABLE}.supplier_name ;;
   }
   measure: count {
     type: count
