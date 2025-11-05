@@ -1,6 +1,6 @@
 view: pet_profiles {
   label: "Pet Profiles"
-  sql_table_name: `gemini-looker-demo-dataset.cymbal_pets.pet_profiles` ;;
+  sql_table_name: `@{gcp_project}.@{bq_dataset}.pet_profiles` ;;
   fields_hidden_by_default: yes
 
   dimension: activity_level {

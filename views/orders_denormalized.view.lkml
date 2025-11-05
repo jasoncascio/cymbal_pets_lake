@@ -1,5 +1,5 @@
 view: orders_denormalized {
-  sql_table_name: `cymbal_pets_lake.orders_denormalized` ;;
+  sql_table_name: `@{gcp_project}.@{bq_dataset}.orders_denormalized` ;;
 
   dimension: customers_address_city {
     type: string
@@ -357,15 +357,15 @@ view: orders_denormalized {
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-	pet_profiles_pet_name,
-	stores_store_name,
-	suppliers_contact_name,
-	products_product_name,
-	pet_profiles_nickname,
-	customers_first_name,
-	suppliers_supplier_name,
-	customers_last_name
-	]
+  pet_profiles_pet_name,
+  stores_store_name,
+  suppliers_contact_name,
+  products_product_name,
+  pet_profiles_nickname,
+  customers_first_name,
+  suppliers_supplier_name,
+  customers_last_name
+  ]
   }
 
 }
